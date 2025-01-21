@@ -1,2 +1,2 @@
-flask==3.1.0  
-yt-dlp==2025.01.15
+flask
+yt-dlp
