@@ -1,20 +1,9 @@
 from flask import Flask, request, jsonify
 import yt_dlp
 
-
 from flask_cors import CORS  # Import CORS
 
-
-# Enable CORS for all routes
-
-
 app = Flask(__name__)
-CORS(app, origins="http://localhost:3000") 
-
-
-# def fetch_best_audio(formats):
-#     """Extract the best audio-only URL."""
-#     return next((f['url'] for f in formats if f.get('acodec') != 'none' and f.get('vcodec') == 'none'), None)
 
 def fetch_combined_stream(formats):
     """Extract the combined audio+video URL."""
@@ -36,8 +25,6 @@ def get_video_info():
             info_dict = ydl.extract_info(f"https://www.youtube.com/watch?v={video_id}", download=False)
             title = info_dict.get('title')
             formats = info_dict.get('formats', [])
-
-            # Run audio and combined URL fetching in parallel
            
             combined_stream = fetch_combined_stream(formats)
 
