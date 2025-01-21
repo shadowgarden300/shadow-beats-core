@@ -1,8 +1,6 @@
 from flask import Flask, request, jsonify
 import yt_dlp
 
-from flask_cors import CORS  # Import CORS
-
 app = Flask(__name__)
 
 def fetch_combined_stream(formats):
