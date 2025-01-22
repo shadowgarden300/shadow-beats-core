@@ -1,5 +1,6 @@
 import os
 import base64
+from dotenv import load_dotenv
 from flask import Flask, request, jsonify
 import yt_dlp
 
