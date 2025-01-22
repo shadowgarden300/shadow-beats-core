@@ -21,7 +21,7 @@ def get_video_info():
     ydl_opts = {
         'quiet': True,
         'noplaylist': True,
-        'cookiesfrombrowser': ('chrome','safari'),  # Use cookies directly from Chrome
+        'cookiesfrombrowser': ('chrome',),  # Use cookies directly from Chrome
     }
 
     try:
