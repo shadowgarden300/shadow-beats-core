@@ -80,4 +80,4 @@ def get_video_info():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()
