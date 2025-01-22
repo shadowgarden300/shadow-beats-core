@@ -36,6 +36,11 @@ cookies_path = './temp/cookies.txt'
 if not os.path.exists(cookies_path):
     create_cookies_file()
 
+@app.route('/')
+def app_status():
+    """Default route to show the app's status."""
+    return jsonify({"status": "App is up and running!"})
+
 @app.route('/api/info', methods=['GET'])
 def get_video_info():
     video_id = request.args.get('id')
