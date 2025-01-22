@@ -1,40 +1,11 @@
-import os
-import base64
-from dotenv import load_dotenv
 from flask import Flask, request, jsonify
 import yt_dlp
-
-# Load environment variables from .env.local file
-# load_dotenv(dotenv_path='.env.local')
 
 app = Flask(__name__)
 
 def fetch_combined_stream(formats):
     """Extract the combined audio+video URL."""
     return next((f['url'] for f in formats if f.get('vcodec') != 'none' and f.get('acodec') != 'none'), None)
-
-def create_cookies_file():
-    """Create cookies file from base64 encoded cookies in the environment variable."""
-    cookies_base64 = os.getenv("YOUTUBE_COOKIES_BASE64")
-    if cookies_base64:
-        # Decode the base64 encoded cookies
-        cookies_data = base64.b64decode(cookies_base64).decode('utf-8')
-        cookies_dir = './temp'
-        
-        if not os.path.exists(cookies_dir):
-            os.makedirs(cookies_dir)
-        
-        # Write the decoded cookies to the cookies.txt file
-        with open(os.path.join(cookies_dir, 'cookies.txt'), 'w') as f:
-            f.write(cookies_data)
-        print("Cookies file created successfully.")
-    else:
-        print("No YOUTUBE_COOKIES_BASE64 environment variable found.")
-
-# Create cookies file if it doesn't exist when the app starts
-cookies_path = './temp/cookies.txt'
-if not os.path.exists(cookies_path):
-    create_cookies_file()
 
 @app.route('/')
 def app_status():
@@ -48,13 +19,9 @@ def get_video_info():
         return jsonify({"error": "Invalid YouTube ID"}), 400
 
     ydl_opts = {
-        'cookies': cookies_path,  # Use only the provided cookies file
-        'quiet': True,  # Suppress additional output
-        'noplaylist': True,  # Don't download playlists, only the single video
-        'no_check_certificate': True,  # Disable SSL certificate checks to avoid issues
-        'force_generic_extractor': True,  # Use a generic extractor in case YouTube is not detected correctly
-        'username': None,  # Ensure no username is passed (prevents other authentication)
-        'password': None,  # Ensure no password is passed
+        'quiet': True,
+        'noplaylist': True,
+        'cookiesfrombrowser': ('chrome','safari'),  # Use cookies directly from Chrome
     }
 
     try:
@@ -81,4 +48,4 @@ def get_video_info():
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=False)
