@@ -1,2 +1,0 @@
-//Add youtube cookies here
-// on server can be added to environment 
