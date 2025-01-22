@@ -2,10 +2,9 @@ import os
 import base64
 from flask import Flask, request, jsonify
 import yt_dlp
-from dotenv import load_dotenv
 
 # Load environment variables from .env.local file
-load_dotenv(dotenv_path='.env.local')
+# load_dotenv(dotenv_path='.env.local')
 
 app = Flask(__name__)
 
