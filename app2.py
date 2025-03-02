@@ -3,7 +3,6 @@ from flask_cors import CORS
 import yt_dlp
 
 app = Flask(__name__)
-
 cors = CORS(app)
 
 def fetch_combined_stream(formats):
@@ -21,10 +20,13 @@ def get_video_info():
     if not video_id:
         return jsonify({"error": "Invalid YouTube ID"}), 400
 
+    # OAuth configuration: replace with your actual credentials
     ydl_opts = {
         'quiet': True,
         'noplaylist': True,
-        'cookies': './cookies.txt'
+        'google_oauth_client_id': '711830483639-7ljcbbk1dgjuej221cjdvlq319tnh0ic.apps.googleusercontent.com',           # Replace with your Google OAuth Client ID
+        'google_oauth_client_secret': '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',   # Replace with your Google OAuth Client Secret
+        'oauth_refresh_token': 'YOUR_REFRESH_TOKEN'           # Optionally replace with your OAuth Refresh Token
     }
 
     try:
@@ -32,9 +34,7 @@ def get_video_info():
             info_dict = ydl.extract_info(f"https://www.youtube.com/watch?v={video_id}", download=False)
             title = info_dict.get('title')
             formats = info_dict.get('formats', [])
-           
             combined_stream = fetch_combined_stream(formats)
-
             response = {
                 "video_id": video_id,
                 "title": title,
@@ -48,7 +48,6 @@ def get_video_info():
         return jsonify({"error": f"Error processing video: {str(e)}"}), 500
     except Exception as e:
         return jsonify({"error": f"An unexpected error occurred: {str(e)}"}), 500
-
 
 if __name__ == '__main__':
     app.run(debug=False)
