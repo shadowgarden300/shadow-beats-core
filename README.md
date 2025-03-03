@@ -11,7 +11,7 @@ Shadow Beats Core is a prerequisite service for the [Shadow Beats](https://githu
 
 1. Clone the repository:
    ```sh
-   git clone <repository_url>
+   git clone https://github.com/shadowgarden300/shadow-beats-core
    cd shadow-beats-core
    ```
 2. Install dependencies:
