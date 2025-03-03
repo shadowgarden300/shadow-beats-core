@@ -6,10 +6,10 @@ app = Flask(__name__)
 cors = CORS(app)
 
 # Hardcoded PO token and Visitor Data
-PO_TOKEN = "MnSist5_XRj8c6KKm3cVXoSWq0r1ZsrUlPr1B1M6j3m1pqnIws5I8-UQvAvNY551VyxdUB5TsIfrldl2dxYd-Q5rTjis9W2OE8cGQ95w5_-s8NMjVF9nubvgk5UWmThicjkeJBsOxjalem7UtLJEl5PCkgZSzQ=="
-VISITOR_DATA = "CgtnTnhGaDJVcXdNdyj1_JS-BjIKCgJJThIEGgAgbQ%3D%3D"
-def get_tokens():
-    return VISITOR_DATA, PO_TOKEN
+# PO_TOKEN = "MnSist5_XRj8c6KKm3cVXoSWq0r1ZsrUlPr1B1M6j3m1pqnIws5I8-UQvAvNY551VyxdUB5TsIfrldl2dxYd-Q5rTjis9W2OE8cGQ95w5_-s8NMjVF9nubvgk5UWmThicjkeJBsOxjalem7UtLJEl5PCkgZSzQ=="
+# VISITOR_DATA = "CgtnTnhGaDJVcXdNdyj1_JS-BjIKCgJJThIEGgAgbQ%3D%3D"
+# def get_tokens():
+#     return VISITOR_DATA, PO_TOKEN
 
 def fetch_combined_stream(yt):
     """Extract the highest resolution stream with both audio and video."""
@@ -29,7 +29,9 @@ def get_video_info():
         return jsonify({"error": "Invalid YouTube ID"}), 400
     
     try:
-        yt = YouTube(f"https://www.youtube.com/watch?v={video_id}", use_po_token=True, po_token_verifier=get_tokens)
+        yt = YouTube(
+            f"https://www.youtube.com/watch?v={video_id}",
+            'WEB'        )
         title = yt.title
         combined_stream = fetch_combined_stream(yt)
 
