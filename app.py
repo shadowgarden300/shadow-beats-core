@@ -23,8 +23,7 @@ def get_video_info():
 
     ydl_opts = {
         'quiet': True,
-        'noplaylist': True,
-        'cookies': './cookies.txt'
+        'noplaylist': True
     }
 
     try:

@@ -1,13 +1,14 @@
 from flask import Flask, request, jsonify
-from flask_cors import CORS 
-import yt_dlp
+from flask_cors import CORS
+from pytubefix import YouTube
 
 app = Flask(__name__)
 cors = CORS(app)
 
-def fetch_combined_stream(formats):
-    """Extract the combined audio+video URL."""
-    return next((f['url'] for f in formats if f.get('vcodec') != 'none' and f.get('acodec') != 'none'), None)
+def fetch_combined_stream(yt):
+    """Extract the highest resolution stream with both audio and video."""
+    stream = yt.streams.filter(progressive=True).order_by("resolution").desc().first()
+    return stream.url if stream else None
 
 @app.route('/')
 def app_status():
@@ -19,33 +20,19 @@ def get_video_info():
     video_id = request.args.get('id')
     if not video_id:
         return jsonify({"error": "Invalid YouTube ID"}), 400
-
-    # OAuth configuration: replace with your actual credentials
-    ydl_opts = {
-        'quiet': True,
-        'noplaylist': True,
-        'google_oauth_client_id': '711830483639-7ljcbbk1dgjuej221cjdvlq319tnh0ic.apps.googleusercontent.com',           # Replace with your Google OAuth Client ID
-        'google_oauth_client_secret': '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',   # Replace with your Google OAuth Client Secret
-        'oauth_refresh_token': 'YOUR_REFRESH_TOKEN'           # Optionally replace with your OAuth Refresh Token
-    }
-
+    
     try:
-        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            info_dict = ydl.extract_info(f"https://www.youtube.com/watch?v={video_id}", download=False)
-            title = info_dict.get('title')
-            formats = info_dict.get('formats', [])
-            combined_stream = fetch_combined_stream(formats)
-            response = {
-                "video_id": video_id,
-                "title": title,
-                "video_stream_url": combined_stream,
-            }
-            return jsonify(response)
+        yt = YouTube(f"https://www.youtube.com/watch?v={video_id}")
+        title = yt.title
+        combined_stream = fetch_combined_stream(yt)
 
-    except yt_dlp.utils.DownloadError as e:
-        if "Video unavailable" in str(e):
-            return jsonify({"error": "Video unavailable"}), 404
-        return jsonify({"error": f"Error processing video: {str(e)}"}), 500
+        response = {
+            "video_id": video_id,
+            "title": title,
+            "video_stream_url": combined_stream,
+        }
+        return jsonify(response)
+
     except Exception as e:
         return jsonify({"error": f"An unexpected error occurred: {str(e)}"}), 500
 
